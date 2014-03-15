@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+   
+<title>Date Picker</title>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+	<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+  
+</head>
+<body>
+<div class="container">
+<h3>DatePicker Ajax Post Example:</h3>
+<div class="alert alert-info">
+    <a href="#" class="close" data-dismiss="alert">&times;</a>
+    <strong>Note!</strong> Please read the comments carefully.
+    <ul>
+    	<li>Please select start date and end date to get refined records.</li>
+    	<li>Else, click <strong>Show All</strong> button to view all records.</li>
+    </ul>
+</div>
+<hr/>
+<a id="showAll" href="getHoursSQL" class="btn btn-primary">Show All</a>
+
+	<form method="post" id="myForm" action="getHoursSQL" class="form-horizontal">	
+		<div id="strtDateErr" style="display: none;" class="alert alert-danger">
+		    <a href="#" class="close" data-dismiss="alert">&times;</a>
+		    <strong>Error!</strong> Please select start date.
+		</div>
+	
+	<div class="form-group">
+		<label class="control-label col-xs-2">Start Date:</label>
+		<div class="col-xs-5">
+	        <input type="text" 
+	        	  name="startDate"
+	        	  id="startDate"
+	        	  class="form-control"
+				  placeholder="Start Date">
+		</div>
+	</div>                     
+    <div class="form-group">
+		<label class="control-label col-xs-2">End Date:</label>
+		<div class="col-xs-5">
+    		<input type="text"
+	    		 name="endDate"
+	    		 id="endDate" 
+	    		 class="form-control"
+				 placeholder="End date"/>
+    	</div>
+    </div>		
+    </form>
+    
+    <div id="startresult" style="display: none;" class="well"></div>
+        
+    <div id="allresult" style="display: none;" class="well"></div>
+</div>
+</body>
+  <script src="//code.jquery.com/jquery-1.9.1.js"></script>  
+  <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<script>
+  $(function() {
+	  $('input[name=startDate]').datepicker({
+		  dateFormat: "yy-mm-dd",		  
+		  maxDate: "+60D",      
+	      numberOfMonths: 2,
+	      onClose: function( selectedDate ) {
+	        $('input[name=endDate]').datepicker( "option", "minDate", selectedDate );
+	        /* $('#startresult').empty();
+	        $('#startresult').hide(); */
+	      }
+	    });
+	  $('input[name=endDate]').datepicker({
+		  dateFormat: "yy-mm-dd",		  
+		  maxDate: "+60D",      
+	      numberOfMonths: 2,
+	      onClose: function( selectedDate ) {
+	        $('input[name=startDate]').datepicker( "option", "maxDate", selectedDate );
+	      }
+	    });
+ });
+</script>
+
+<script type="text/javascript">
+
+    $("input[name=endDate]").datepicker({
+    	dateFormat: "yy-mm-dd",
+        onSelect: function(date, instance){
+			if($("input[name=startDate]").val().length < 1 ){
+				$("div#strtDateErr").show();
+				return;
+			}
+				
+        	$.ajax({
+                url: $("#myForm").attr("action"),
+                type: $("#myForm").attr("method"),                                           
+                dataType: 'json',                 
+                data: $("#myForm").serialize(),                                 
+                success: function(responseJson) {
+                	$('#startresult').empty();                	
+                	if ( responseJson.length == 0 ) {
+                        console.log("NO DATA!");
+                        $('#startresult').append('No DATA! try different.');                        
+                    }else{
+                        $('#startresult').append('<h4>Result:</h4>');
+                		loadTable(responseJson,$('#startresult'));                		
+                  }
+                	$('#startresult').show();
+               },
+                error:function(jqXHR, textStatus, errorThrown){
+              	  alert(textStatus);						
+                }
+              });
+        }
+    });
+
+    $('a#showAll').click(function(e){
+    	$.ajax({
+            url: $(this).attr('href'),
+            type: 'GET',                                           
+            dataType: 'json',                                        
+            success: function(responseJson) {
+            	$('#allresult').empty();
+            	if ( responseJson.length == 0 ) {
+                    console.log("NO DATA!");
+                    $('#allresult').append('No DATA! try different.');                   
+                }else{
+                	$('#allresult').append('<h4>All:</h4>');
+            		loadTable(responseJson,$('#allresult'));            		
+              }
+             $('#allresult').show();
+           },
+            error:function(jqXHR, textStatus, errorThrown){
+          	  alert(textStatus);						
+            }
+          });
+        e.preventDefault();
+    });   
+
+    function loadTable(responseJson, table){
+    	var $table = $('<table>').appendTo(table);
+    	$table.addClass('table table-bordered table-hover');
+    	$('<tr>').appendTo($table)
+    		.append($('<th>').text('Id'))
+    		.append($('<th>').text('date'))
+    		.append($('<th>').text('name'))
+    		.append($('<th>').text('address'))
+    		.append($('<th>').text('dayHours'))
+    		.append($('<th>').text('dayMinutes'))
+    		.append($('<th>').text('allDayHours'))
+    		.append($('<th>').text('kmDistanceAddr'))
+    		.append($('<th>').text('timeToTravel'));
+    	$.each(responseJson, function(index, workData) { // Iterate over the JSON array. 
+    		$('<tr>').appendTo($table)
+    		.append($('<td>').text(workData.pId))
+            .append($('<td>').text(workData.date))
+            .append($('<td>').text(workData.name))
+            .append($('<td>').text(workData.address))                        
+            .append($('<td>').text(workData.dayHours))                        
+            .append($('<td>').text(workData.dayMinutes))                        
+            .append($('<td>').text(workData.allDayHours))                        
+            .append($('<td>').text(workData.kmDistanceAddr))                        
+            .append($('<td>').text(workData.timeToTravel));                   
+        });
+    }
+</script>
+</html>
