@@ -15,7 +15,7 @@ Tools:
 <h4>How To Run:</h4>
 -------------
 <ul>
-  <li>Download project from repository or Clone it by:</li>
+  <li>Download the project by Zip or Clone it by: git clone https://github.com/abhishek333/ServletAjaxDatePickerPostJson.git</li>
   <li>Import project to eclipse using <i>Existing Projects into Workspace</i>.</li>
   <li>Checnge database password in <b><i>GetHoursSQL.java</i></b></li>
   <li>Execute <b><i>data.sql</i></b> to populates tables and records.</li>
