@@ -26,6 +26,7 @@
 </div>
 <hr/>
 <a id="showAll" href="getHoursSQL" class="btn btn-primary">Show All</a>
+<a href="#myModal" class="btn btn-primary" data-toggle="modal">Add New</a>
 
 	<form method="post" id="myForm" action="getHoursSQL" class="form-horizontal">	
 		<div id="strtDateErr" style="display: none;" class="alert alert-danger">
@@ -54,121 +55,112 @@
     	</div>
     </div>		
     </form>
-    
-    <div id="startresult" style="display: none;" class="well"></div>
+    <hr/>
+    <div id="startresult" style="display: none;" ></div>
         
-    <div id="allresult" style="display: none;" class="well"></div>
+    <div id="allresult" style="display: none;" ></div>
 </div>
+<div id="myModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Add New Workdata:</h4>
+            </div>
+            <div class="modal-body">                
+                <p class="text-info"><small>Please fillall the fields and click save.</small></p>
+                <form method="post" id="addWorkForm" action="addWork" class="form-horizontal">	
+					<div id="addNewErr" style="display: none;" class="alert alert-danger">
+					    <a href="#" class="close" data-dismiss="alert">&times;</a>
+					    <strong>Error!</strong> Please fillup all fields.
+					</div>
+				
+				<div class="form-group">
+					<label class="control-label col-xs-4">Date:</label>
+					<div class="col-xs-5">
+				        <input type="text" 
+				        	  name="date"
+				        	  id="date"
+				        	  class="form-control"
+							  placeholder="Date">
+					</div>
+				</div>                     
+			    <div class="form-group">
+					<label class="control-label col-xs-4">Name:</label>
+					<div class="col-xs-5">
+			    		<input type="text"
+				    		 name="name"
+				    		 id="name" 
+				    		 class="form-control"
+							 placeholder="Full Name"/>
+			    	</div>
+			    </div>		
+			    <div class="form-group">
+					<label class="control-label col-xs-4">Address:</label>
+					<div class="col-xs-5">
+			    		<input type="text"
+				    		 name="address"
+				    		 id="address" 
+				    		 class="form-control"
+							 placeholder="Address"/>
+			    	</div>
+			    </div>		
+			    <div class="form-group">
+					<label class="control-label col-xs-4">Day Hours:</label>
+					<div class="col-xs-5">
+			    		<input type="text"
+				    		 name="dayHours"
+				    		 id="dayHours" 
+				    		 class="form-control"
+							 placeholder="Day Hours"/>
+			    	</div>
+			    </div>		
+			    <div class="form-group">
+					<label class="control-label col-xs-4">Day Minutes:</label>
+					<div class="col-xs-5">
+			    		<input type="text"
+				    		 name="dayMinutes"
+				    		 id="dayMinutes" 
+				    		 class="form-control"
+							 placeholder="Day Minutes"/>
+			    	</div>
+			    </div>		
+			    <div class="form-group">
+					<label class="control-label col-xs-4">Distance from Addr:</label>
+					<div class="col-xs-5">
+			    		<input type="text"
+				    		 name="kmDistanceAddr"
+				    		 id="kmDistanceAddr" 
+				    		 class="form-control"
+							 placeholder="Distance from Addr"/>
+			    	</div>
+			    </div>		
+			    <div class="form-group">
+					<label class="control-label col-xs-4">Time To Travel:</label>
+					<div class="col-xs-5">
+			    		<input type="text"
+				    		 name="timeToTravel"
+				    		 id="timeToTravel" 
+				    		 class="form-control"
+							 placeholder="Time To Travel"/>
+			    	</div>
+			    </div>		
+			    </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" id="addWorkDataSubmit" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 </body>
   <script src="//code.jquery.com/jquery-1.9.1.js"></script>  
   <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 
 <!-- Latest compiled and minified JavaScript -->
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-<script>
-  $(function() {
-	  $('input[name=startDate]').datepicker({
-		  dateFormat: "yy-mm-dd",		  
-		  maxDate: "+60D",      
-	      numberOfMonths: 2,
-	      onClose: function( selectedDate ) {
-	        $('input[name=endDate]').datepicker( "option", "minDate", selectedDate );
-	        /* $('#startresult').empty();
-	        $('#startresult').hide(); */
-	      }
-	    });
-	  $('input[name=endDate]').datepicker({
-		  dateFormat: "yy-mm-dd",		  
-		  maxDate: "+60D",      
-	      numberOfMonths: 2,
-	      onClose: function( selectedDate ) {
-	        $('input[name=startDate]').datepicker( "option", "maxDate", selectedDate );
-	      }
-	    });
- });
-</script>
+<script src="js/main.js"></script>
 
-<script type="text/javascript">
-
-    $("input[name=endDate]").datepicker({
-    	dateFormat: "yy-mm-dd",
-        onSelect: function(date, instance){
-			if($("input[name=startDate]").val().length < 1 ){
-				$("div#strtDateErr").show();
-				return;
-			}
-				
-        	$.ajax({
-                url: $("#myForm").attr("action"),
-                type: $("#myForm").attr("method"),                                           
-                dataType: 'json',                 
-                data: $("#myForm").serialize(),                                 
-                success: function(responseJson) {
-                	$('#startresult').empty();                	
-                	if ( responseJson.length == 0 ) {
-                        console.log("NO DATA!");
-                        $('#startresult').append('No DATA! try different.');                        
-                    }else{
-                        $('#startresult').append('<h4>Result:</h4>');
-                		loadTable(responseJson,$('#startresult'));                		
-                  }
-                	$('#startresult').show();
-               },
-                error:function(jqXHR, textStatus, errorThrown){
-              	  alert(textStatus);						
-                }
-              });
-        }
-    });
-
-    $('a#showAll').click(function(e){
-    	$.ajax({
-            url: $(this).attr('href'),
-            type: 'GET',                                           
-            dataType: 'json',                                        
-            success: function(responseJson) {
-            	$('#allresult').empty();
-            	if ( responseJson.length == 0 ) {
-                    console.log("NO DATA!");
-                    $('#allresult').append('No DATA! try different.');                   
-                }else{
-                	$('#allresult').append('<h4>All:</h4>');
-            		loadTable(responseJson,$('#allresult'));            		
-              }
-             $('#allresult').show();
-           },
-            error:function(jqXHR, textStatus, errorThrown){
-          	  alert(textStatus);						
-            }
-          });
-        e.preventDefault();
-    });   
-
-    function loadTable(responseJson, table){
-    	var $table = $('<table>').appendTo(table);
-    	$table.addClass('table table-bordered table-hover');
-    	$('<tr>').appendTo($table)
-    		.append($('<th>').text('Id'))
-    		.append($('<th>').text('date'))
-    		.append($('<th>').text('name'))
-    		.append($('<th>').text('address'))
-    		.append($('<th>').text('dayHours'))
-    		.append($('<th>').text('dayMinutes'))
-    		.append($('<th>').text('allDayHours'))
-    		.append($('<th>').text('kmDistanceAddr'))
-    		.append($('<th>').text('timeToTravel'));
-    	$.each(responseJson, function(index, workData) { // Iterate over the JSON array. 
-    		$('<tr>').appendTo($table)
-    		.append($('<td>').text(workData.pId))
-            .append($('<td>').text(workData.date))
-            .append($('<td>').text(workData.name))
-            .append($('<td>').text(workData.address))                        
-            .append($('<td>').text(workData.dayHours))                        
-            .append($('<td>').text(workData.dayMinutes))                        
-            .append($('<td>').text(workData.allDayHours))                        
-            .append($('<td>').text(workData.kmDistanceAddr))                        
-            .append($('<td>').text(workData.timeToTravel));                   
-        });
-    }
-</script>
 </html>
