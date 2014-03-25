@@ -15,10 +15,13 @@ Tools:
 <h4>How To Run:</h4>
 -------------
 <ul>
-  <li>Download the project by Zip or Clone it by: git clone https://github.com/abhishek333/ServletAjaxDatePickerPostJson.git</li>
+  <li>Download the project by Zip or Clone it from: git clone https://github.com/abhishek333/ServletAjaxDatePickerPostJson.git</li>
   <li>Import project to eclipse using <i>Existing Projects into Workspace</i>.</li>
-  <li>Checnge database password in <b><i>GetHoursSQL.java</i></b></li>
+  <li>Checnge database password in <b><i>com.asn.WorkDataCRUD#getConnection()</i></b></li>
   <li>Execute <b><i>data.sql</i></b> to populates tables and records.</li>
   <li>Run on Server</li>
 </ul>
 
+Output:
+
+![alt tag](http://jmp.sh/gVw3Ae5)
