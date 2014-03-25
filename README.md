@@ -22,3 +22,6 @@ Tools:
   <li>Run on Server</li>
 </ul>
 
+Output:
+
+![alt tag](http://jmp.sh/gVw3Ae5)
