@@ -22,6 +22,6 @@ Tools:
   <li>Run on Server</li>
 </ul>
 
-Output:
+If everything fine you will see below screen on browser:
 
-![alt tag](http://jmp.sh/gVw3Ae5)
+![alt tag](https://raw.github.com/abhishek333/ServletAjaxDatePickerPostJson/master/DatePickerAjaxExample.png)
